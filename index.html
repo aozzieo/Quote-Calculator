@@ -1885,9 +1885,10 @@ function printEst(){
     .ed-split .es-row.grn .val{color:#248A3D}
     .ed-note{font-size:11px;color:#888;font-style:italic;margin-top:8px;line-height:1.5}
     .ed-footer{text-align:center;font-size:11px;color:#999;margin-top:32px;padding-top:14px;border-top:1px solid #E5E5E7}
-    @media print{body{padding:20px}@page{margin:1.5cm}}
-  </style></head><body>${content}
-  <script>window.onload=function(){window.print();}<\/script>
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>
+  </head><body>${content}
+  <script>window.onload=function(){html2pdf().set({margin:15,filename:'Business-Estimate.pdf',html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(document.body).save().then(function(){window.close();});}<\/script>
   </body></html>`);
   win.document.close();
 }
@@ -2176,9 +2177,10 @@ function printProp(){
     .prop .psign .sline{border-bottom:1px solid #aaa;height:28px;margin-bottom:4px}
     .prop .psign .slbl{font-size:11px;color:#999}
     .prop .pfine{font-size:11px;color:#666;line-height:1.5;margin-top:8px}
-    @media print{body{padding:20px}@page{margin:1.5cm}}
-  </style></head><body><div class="prop">${content}</div>
-  <script>window.onload=function(){window.print();}<\/script>
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>
+  </head><body><div class="prop">${content}</div>
+  <script>window.onload=function(){html2pdf().set({margin:15,filename:'Project-Proposal.pdf',html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(document.body).save().then(function(){window.close();});}<\/script>
   </body></html>`);
   win.document.close();
 }
