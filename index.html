@@ -9,6 +9,7 @@
 :root{
   --bg:#F5F5F7;--s:#FFF;--s2:#F5F5F7;--s3:#E8E8ED;
   --b:#D2D2D7;--b2:#C7C7CC;--t:#1D1D1F;--t2:#6E6E73;--t3:#AEAEB2;
+  --surface:var(--s);--surface-2:var(--s2);--border:var(--b);
   --blue:#007AFF;--blue2:#0051D5;--blue-a:rgba(0,122,255,.09);--blue-a2:rgba(0,122,255,.16);
   --green:#34C759;--green2:#248A3D;--green-a:rgba(52,199,89,.11);
   --orange:#FF9500;--orange-a:rgba(255,149,0,.11);
@@ -21,6 +22,7 @@
 @media(prefers-color-scheme:dark){:root{
   --bg:#000;--s:#1C1C1E;--s2:#2C2C2E;--s3:#3A3A3C;--b:#38383A;--b2:#48484A;
   --t:#F5F5F7;--t2:#98989D;--t3:#636366;
+  --surface:var(--s);--surface-2:var(--s2);--border:var(--b);
   --blue-a:rgba(0,122,255,.18);--blue-a2:rgba(0,122,255,.26);
   --green-a:rgba(52,199,89,.18);--orange-a:rgba(255,149,0,.18);
   --red-a:rgba(255,59,48,.18);--purple-a:rgba(175,82,222,.18);
@@ -285,11 +287,11 @@ textarea{resize:vertical}
 .wi .wo.gain{color:var(--green2)}
 .wi .wo.cost{color:var(--orange)}
 .wi .wd{font-size:12px;color:var(--t2);margin-top:4px;line-height:1.4}
-.roi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
-.roi-card{background:var(--s);border:1px solid var(--b);border-radius:var(--r-md);padding:16px;box-shadow:var(--sh)}
-.roi-card .rn{font-size:13px;font-weight:600;margin-bottom:10px}
-.roi-card .rs{display:flex;justify-content:space-between;font-size:12px;color:var(--t2);padding:4px 0}
-.roi-card .rs .rv{color:var(--t);font-weight:600;font-feature-settings:"tnum"}
+.roi-grid,.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.roi-card,.team-card{background:var(--s);border:1px solid var(--b);border-radius:var(--r-md);padding:16px;box-shadow:var(--sh)}
+.roi-card .rn,.team-card .tn{font-size:13px;font-weight:600;margin-bottom:10px}
+.roi-card .rs,.team-card .ts{display:flex;justify-content:space-between;font-size:12px;color:var(--t2);padding:4px 0;gap:12px}
+.roi-card .rs .rv,.team-card .ts .tvv{color:var(--t);font-weight:600;font-feature-settings:"tnum"}
 
 /* MODAL */
 .mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);
@@ -463,7 +465,7 @@ textarea{resize:vertical}
     <div class="cd">Based on all inputs across every tab.</div>
     <div class="stat-grid">
       <div class="stat"><div class="l">Annual overhead</div><div class="v" id="s-oh">$0</div><div class="s">all fixed costs / yr</div></div>
-      <div class="stat"><div class="l">Overhead / your billable hr</div><div class="v" id="s-ohhr">$0</div><div class="s">all costs ÷ your hours</div></div>
+      <div class="stat"><div class="l">Overhead / firm billable hr</div><div class="v" id="s-ohhr">$0</div><div class="s">all costs ÷ firm hours</div></div>
       <div class="stat"><div class="l">Minimum hourly rate</div><div class="v" id="s-min">$0</div><div class="s">covers costs + target pay</div></div>
       <div class="stat feat"><div class="l">Recommended hourly rate</div><div class="v" id="s-rec">$0</div><div class="s">includes profit margin</div></div>
     </div>
@@ -628,19 +630,19 @@ textarea{resize:vertical}
   </div>
   <div class="ht">
     <div class="ht-title">⏱ Hour budget</div>
-    <div class="cd" style="margin-bottom:14px">Tracks your personal hours since you're the one delivering the work. Team members add capacity but their hours are tracked separately.</div>
+    <div class="cd" style="margin-bottom:14px">Tracks total firm capacity. Employee billable hours are included so the available-hours budget matches the rate calculation.</div>
     <div class="ht-grid">
       <div class="ht-side">
         <div class="hl">This project's allocation</div>
         <div class="hv" id="ht-alloc">0 hrs</div>
-        <div class="hs" id="ht-avail">— hrs available per project (your annual hrs ÷ projects)</div>
+        <div class="hs" id="ht-avail">— hrs available per project (firm billable hrs ÷ projects)</div>
         <div class="ht-bar-bg"><div class="ht-bar ok" id="ht-bar" style="width:0%"></div></div>
         <div class="ht-msg ok" id="ht-msg">Enter hours below to see your capacity check.</div>
       </div>
       <div class="ht-side">
-        <div class="hl">Your annual capacity</div>
+        <div class="hl">Annual firm capacity</div>
         <div class="hv" id="ht-cap">0 hrs</div>
-        <div class="hs" id="ht-cap-sub">your billable hours / yr</div>
+        <div class="hs" id="ht-cap-sub">owner billable hours / yr</div>
         <div class="div" style="margin:12px 0 10px"></div>
         <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span class="muted">If all projects this size</span><span class="bold tnum" id="ht-used">0 hrs</span></div>
         <div style="display:flex;justify-content:space-between;font-size:13px"><span class="muted">Hours left over</span><span class="bold tnum" id="ht-rem">0 hrs</span></div>
@@ -841,6 +843,11 @@ textarea{resize:vertical}
     <h3>3-year growth projection <span class="meta">10% annual rate increase</span></h3>
     <div style="overflow-x:auto"><table class="proj-tbl" id="proj-tbl"></table></div>
     <div class="callout c-info"><strong>The compounding effect</strong>10% per year = 33% more revenue in year 3 — same workload. Raise new client rates immediately; give existing clients a 6-month notice.</div>
+  </div>
+
+  <div class="dsec">
+    <h3>Employee summary <span class="meta">Payroll team only</span></h3>
+    <div class="team-grid" id="dash-team"></div>
   </div>
 
   <div class="dsec">
@@ -1221,11 +1228,12 @@ function calc(){
   set('t-ceq',m(cEqDep)+'/yr');
 
   // Team
-  let teamCost=0,teamBillHrs=0;
+  let teamCost=0,teamBillHrs=0,teamTotalHrs=0;
   emps.forEach(e=>{
     const isSalary=e.type!=='hourly';
     const annCost=isSalary?e.salary*e.mult:e.hrRate*e.hrs*e.mult;
     teamCost+=annCost;
+    teamTotalHrs+=e.hrs||0;
     teamBillHrs+=e.hrs*(e.billPct/100);
   });
   set('t-team',m(teamCost)+'/yr');
@@ -1233,12 +1241,12 @@ function calc(){
   if(ts){ts.style.display=emps.length?'flex':'none';}
   set('ts-cost',m(teamCost));set('ts-hrs',n(teamBillHrs)+' hrs');
   const totBillHrs=oBillHrs+teamBillHrs;
-  set('billInfo',`Your billable capacity: ${n(oBillHrs)} hrs/yr · ~${n(oBillHrs/projPerYr)} hrs/project${emps.length?' · Team adds '+n(teamBillHrs)+' hrs/yr of additional capacity':''}`);
+  set('billInfo',`Firm billable capacity: ${n(totBillHrs)} hrs/yr · ~${n(totBillHrs/projPerYr)} hrs/project${emps.length?` (${n(oBillHrs)} owner + ${n(teamBillHrs)} team)`:''}`);
   set('ts-cap',n(totBillHrs)+' hrs');
 
   // Total annual overhead
   const annOH=homeOH+sw+prof+ins+comp+mkt+fin+eqDep+maint+teamCost;
-  const ohPerHr=oBillHrs>0?annOH/oBillHrs:0;  // spread overhead across YOUR hours
+  const ohPerHr=totBillHrs>0?annOH/totBillHrs:0;  // spread overhead across all firm billable hours
   set('s-oh',m(annOH));set('s-ohhr',m(ohPerHr,true));
 
   // Rate calc — correct formula
@@ -1255,7 +1263,7 @@ function calc(){
   const rCoeff=1-seFull-(1-seHalf)*iRates;
   const reqR=rCoeff>0?targetPay/rCoeff+annOH:targetPay+annOH;
   const reqRbd=reqR/Math.max(1-badDebt,0.7);
-  const minHr=oBillHrs>0?reqRbd/oBillHrs:0;  // YOUR hours only — team doesn't dilute your rate
+  const minHr=totBillHrs>0?reqRbd/totBillHrs:0;  // firm rate: team capacity helps spread employee cost and overhead
   const recHr=minHr*1.30;
   set('s-min',m(minHr,true));set('s-rec',m(recHr,true));
 
@@ -1268,15 +1276,15 @@ function calc(){
   const totLab=laborCost+subCost;
   set('t-lab',m(totLab));
 
-  // Hour tracker — all calculations based on YOUR hours (since you deliver the work)
-  const availPP=projPerYr>0?oBillHrs/projPerYr:0;  // your hours per project
+  // Hour tracker — all calculations based on total firm billable capacity
+  const availPP=projPerYr>0?totBillHrs/projPerYr:0;  // firm hours per project
   const uPct=availPP>0?projHrs/availPP:0;
-  const allH=projHrs*projPerYr;          // total of your hours used at current scope × proj count
-  const remH=oBillHrs-allH;              // your remaining hours after all projects
+  const allH=projHrs*projPerYr;          // total firm hours used at current scope × proj count
+  const remH=totBillHrs-allH;            // remaining firm hours after all projects
   set('ht-alloc',`${projHrs} hrs`);
-  set('ht-avail',`${n(availPP)} hrs available per project · ${n(oBillHrs)} of your hours ÷ ${projPerYr} projects`);
-  set('ht-cap',`${n(oBillHrs)} hrs`);
-  set('ht-cap-sub',emps.length?`your billable hours · team adds ${n(teamBillHrs)} more`:'your billable hours / yr');
+  set('ht-avail',`${n(availPP)} hrs available per project · ${n(totBillHrs)} firm hrs ÷ ${projPerYr} projects${emps.length?` (${n(oBillHrs)} owner + ${n(teamBillHrs)} team)`:''}`);
+  set('ht-cap',`${n(totBillHrs)} hrs`);
+  set('ht-cap-sub',emps.length?`${n(oBillHrs)} owner hrs + ${n(teamBillHrs)} team hrs / yr`:'owner billable hours / yr');
   set('ht-used',`${n(allH)} hrs`);
   set('ht-rem',`${n(Math.max(remH,0))} hrs`);
   const bar=$('ht-bar');
@@ -1286,7 +1294,7 @@ function calc(){
     if(!projHrs){msg.textContent='Enter hours below to see your capacity check.';msg.className='ht-msg ok';}
     else if(uPct<.85){msg.textContent=`✓ Using ${Math.round(uPct*100)}% of your per-project budget`;msg.className='ht-msg ok';}
     else if(uPct<=1.05){msg.textContent=`⚠ Using ${Math.round(uPct*100)}% — close to your limit`;msg.className='ht-msg warn';}
-    else{msg.textContent=`✕ ${Math.round(uPct*100)}% — over budget. Reduce hours or projects/year.`;msg.className='ht-msg over';}
+    else{msg.textContent=`✕ ${Math.round(uPct*100)}% — over budget. Reduce hours, add capacity, or lower projects/year.`;msg.className='ht-msg over';}
   }
   const msg2=$('ht-msg2');
   if(msg2){
@@ -1596,7 +1604,7 @@ function calc(){
   CD={totHrs,oBillHrs,totBillHrs,projPerYr,targetPay,fedRate,stateRate,mileRate,
     annOH,ohPerHr,minHr,recHr,finalP,projNet,projTax,projAft,bizSav,ownPay,
     projHrs,totLab,laborCost,totMat,totTrv,totMods,base,profAmt,procFee,discAmt,
-    teamCost,teamBillHrs,numEmps:emps.length,eqDep,activeEq,
+    teamCost,teamBillHrs,teamTotalHrs,numEmps:emps.length,teamMembers:emps.map(e=>{const isSalary=e.type!=='hourly';const annualCost=isSalary?e.salary*e.mult:e.hrRate*e.hrs*e.mult;return{role:e.role||'Employee',type:e.type,annualCost,hours:e.hrs||0,billPct:e.billPct||0,billHrs:(e.hrs||0)*((e.billPct||0)/100),pay:isSalary?e.salary:e.hrRate,mult:e.mult||1};}),eqDep,activeEq,
     seFull,seHalf,iRates,rCoeff,
     rawMat,vMkup,dH,rH,mH,vH,tH,mileage,flights,hotel,meals,rental,ship,subCost,
     bizPct,ownPct,rushA,cplxA,scopeA,preMargin,
@@ -1611,7 +1619,7 @@ function updateDash(){
   if(!CD.totBillHrs)return;
   const{finalP,projPerYr,projNet,projAft,ownPay,bizSav,projTax,annOH,totBillHrs,projHrs,
     minHr,recHr,targetPay,totHrs,oBillHrs,fedRate,stateRate,seFull,rCoeff,
-    numEmps,teamCost,activeEq,teamBillHrs}=CD;
+    numEmps,teamCost,activeEq,teamBillHrs,teamTotalHrs}=CD;
 
   const annRev=finalP*projPerYr;
   const annPay=ownPay*projPerYr;
@@ -1645,14 +1653,16 @@ function updateDash(){
   // Key metrics
   const capUtil=projHrs>0&&totBillHrs>0?(projHrs*projPerYr)/totBillHrs*100:0;
   const beProj=annOH>0&&finalP>0?Math.ceil(annOH/finalP):0;
-  const revPerAllHr=totHrs>0?annRev/totHrs:0;
+  const firmTotalHrs=(totHrs||0)+(teamTotalHrs||0);
+  const revPerAllHr=firmTotalHrs>0?annRev/firmTotalHrs:0;
   $('dash-stats').innerHTML=`
     <div class="stat ${capUtil>100?'warn':capUtil>90?'':'good'}"><div class="l">Capacity utilization</div><div class="v">${Math.round(capUtil)}%</div><div class="s">${capUtil>100?'over capacity':capUtil>90?'nearly full':'of billable hours used'}</div></div>
-    <div class="stat"><div class="l">Revenue / total hour worked</div><div class="v">${m(revPerAllHr,true)}</div><div class="s">including non-billable time</div></div>
+    <div class="stat"><div class="l">Revenue / total hour worked</div><div class="v">${m(revPerAllHr,true)}</div><div class="s">owner + team hours, including non-billable</div></div>
     <div class="stat"><div class="l">After-tax profit / project</div><div class="v">${m(projAft)}</div><div class="s">after all expenses & taxes</div></div>
     <div class="stat warn"><div class="l">Break-even projects / year</div><div class="v">${beProj}</div><div class="s">just to cover ${m(annOH)} overhead</div></div>
     <div class="stat"><div class="l">Taxes / year</div><div class="v">${m(annTax)}</div><div class="s">estimated at current volume</div></div>
     <div class="stat feat"><div class="l">Business savings / year</div><div class="v">${m(annSave)}</div><div class="s">retained in business account</div></div>
+    <div class="stat ${numEmps?'good':''}"><div class="l">Team capacity / year</div><div class="v">${n(teamBillHrs)} hrs</div><div class="s">${numEmps?`${numEmps} employee${numEmps===1?'':'s'} · ${m(teamCost)} payroll cost`:'no employees added'}</div></div>
   `;
 
   // 3-year projection — assumes 10% rate increase per year, overhead grows with inflation
@@ -1674,6 +1684,23 @@ function updateDash(){
       rows+=`<tr class="${y===0?'now':''}"><td>${y===0?'Today':'Year +'+y}</td><td>${m(yr,true)}/hr</td><td class="hi">${m(yp)}</td><td class="hi">${m(yrev)}</td><td>${m(yoh)}</td><td>${m(ytax)}</td><td class="hi">${m(ytake)}</td></tr>`;
     }
     pt.innerHTML=rows+'</tbody>';
+  }
+
+  // Employee summary
+  const tg=$('dash-team');
+  if(tg){
+    const members=CD.teamMembers||[];
+    if(!members.length){
+      tg.innerHTML='<div class="muted small" style="padding:20px;text-align:center;background:var(--s);border:1px solid var(--b);border-radius:var(--r-md)">Add payroll employees in the Team tab to see cost and capacity here.</div>';
+    } else {
+      tg.innerHTML=members.map(e=>`<div class="team-card"><div class="tn">${e.role}</div>
+        <div class="ts"><span>Pay type</span><span class="tvv">${e.type==='hourly'?'Hourly':'Salary'}</span></div>
+        <div class="ts"><span>Base pay</span><span class="tvv">${e.type==='hourly'?m(e.pay,true)+'/hr':m(e.pay)+'/yr'}</span></div>
+        <div class="ts"><span>True annual cost</span><span class="tvv">${m(e.annualCost)}</span></div>
+        <div class="ts"><span>Billable capacity</span><span class="tvv" style="color:var(--blue)">${n(e.billHrs)} hrs</span></div>
+        <div class="ts"><span>Availability</span><span class="tvv">${n(e.hours)} hrs × ${pf(e.billPct)}</span></div>
+      </div>`).join('');
+    }
   }
 
   // Equipment ROI
@@ -1983,6 +2010,7 @@ function renderEst(){
   const projHrs=C.projHrs||0;
   const avail=projPerYr>0?(C.totBillHrs||0)/projPerYr:0;
   const uPct=avail>0?projHrs/avail*100:0;
+  const teamMembers=C.teamMembers||[];
   h+=`<div class="ed-section"><h2>Project Hours & Labor</h2>
   <table class="ed-tbl">
     <thead><tr><th>Hour category</th><th class="r">Hours</th><th class="r">Rate</th><th class="r">Cost</th></tr></thead>
@@ -1998,6 +2026,19 @@ function renderEst(){
   </table>
   <div class="ed-note">Capacity check: ${projHrs} hrs allocated · ${n(avail)} hrs available per project · ${uPct.toFixed(0)}% of budget used · ${n((C.totBillHrs||0)-projHrs*projPerYr)} hrs annual capacity remaining</div>
   </div>`;
+
+  if(teamMembers.length){
+    h+=`<div class="ed-section"><h2>Employee Capacity & Cost</h2>
+    <table class="ed-tbl">
+      <thead><tr><th>Employee / role</th><th>Pay type</th><th class="r">Annual cost</th><th class="r">Billable hrs</th><th class="r">Availability</th></tr></thead>
+      <tbody>
+        ${teamMembers.map(e=>`<tr><td>${e.role}</td><td>${e.type==='hourly'?'Hourly':'Salary'}</td><td class="r">${m(e.annualCost)}</td><td class="r">${n(e.billHrs)} hrs</td><td class="r">${n(e.hours)} hrs × ${pf(e.billPct)}</td></tr>`).join('')}
+        <tr class="sub"><td>Total employee team</td><td></td><td class="r">${m(C.teamCost||0)}</td><td class="r">${n(C.teamBillHrs||0)} hrs</td><td class="r"></td></tr>
+      </tbody>
+    </table>
+    <div class="ed-note">These are payroll employees from the Team tab. Their annual cost is included in overhead, and their billable hours are included in the available-hours capacity used above.</div>
+    </div>`;
+  }
 
   // ── SECTION 4: MATERIALS & TRAVEL ──
   const rawMat=C.rawMat||0, vMkup=C.vMkup||0;
